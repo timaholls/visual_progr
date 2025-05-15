@@ -1,0 +1,208 @@
+<Window x:Class="_3.Task1_2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_3"
+        mc:Ignorable="d"
+        Title="Задание 1.2 - Товары" Height="600" Width="800">
+    <Window.Resources>
+        <!-- Solid Color Brushes -->
+        <SolidColorBrush x:Key="HeaderBrush" Color="#2E7D32"/>
+        <SolidColorBrush x:Key="TVProductBrush" Color="#E64A19" Opacity="0.8"/>
+        <SolidColorBrush x:Key="RegularProductBrush" Color="#1976D2" Opacity="0.8"/>
+        
+        <!-- Linear Gradient Brush для заголовков -->
+        <LinearGradientBrush x:Key="HeaderGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#2E7D32" Offset="0" />
+            <GradientStop Color="#81C784" Offset="1" />
+        </LinearGradientBrush>
+        
+        <!-- Radial Gradient Brush для фона окна -->
+        <RadialGradientBrush x:Key="BackgroundGradient" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+            <GradientStop Color="White" Offset="0" />
+            <GradientStop Color="#F5F5F5" Offset="1" />
+        </RadialGradientBrush>
+        
+        <!-- Стиль для заголовка -->
+        <Style x:Key="HeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource HeaderGradient}"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        
+        <!-- Стиль для карточки товара -->
+        <Style x:Key="ProductCardStyle" TargetType="Border">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Background" Value="{StaticResource RegularProductBrush}"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="3" BlurRadius="5" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Стиль для названия товара -->
+        <Style x:Key="ProductNameStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        
+        <!-- Стиль для характеристик товара -->
+        <Style x:Key="ProductInfoStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        
+        <!-- Стиль для цены товара -->
+        <Style x:Key="PriceStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        
+        <!-- Стиль для кнопок -->
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,10,5,0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Background" Value="#4CAF50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#388E3C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Background="{StaticResource BackgroundGradient}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="Информация о товарах" Style="{StaticResource HeaderStyle}"
+                   Grid.Row="0"/>
+        
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="20">
+                <!-- Samsung TV -->
+                <Border Style="{StaticResource ProductCardStyle}" Background="{StaticResource TVProductBrush}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Samsung TV" Style="{StaticResource ProductNameStyle}"/>
+                            <TextBlock Text="Год выпуска: 2020" Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Лет с момента выпуска: 4" Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Цена до повышения: 1000.00 руб." Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Цена после повышения: 1200.00 руб." Style="{StaticResource PriceStyle}"/>
+                            
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Подробнее" Style="{StaticResource ButtonStyle}"/>
+                                <Button Content="В корзину" Style="{StaticResource ButtonStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <Border Grid.Column="1" Width="150" Height="100" 
+                                Background="White" CornerRadius="5" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="TV" FontSize="48" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Foreground="{StaticResource TVProductBrush}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+                
+                <!-- Laptop -->
+                <Border Style="{StaticResource ProductCardStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Laptop" Style="{StaticResource ProductNameStyle}"/>
+                            <TextBlock Text="Год выпуска: 2021" Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Лет с момента выпуска: 3" Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Цена: 800.00 руб." Style="{StaticResource PriceStyle}"/>
+                            
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Подробнее" Style="{StaticResource ButtonStyle}"/>
+                                <Button Content="В корзину" Style="{StaticResource ButtonStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <Border Grid.Column="1" Width="150" Height="100" 
+                                Background="White" CornerRadius="5" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="Laptop" FontSize="28" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Foreground="{StaticResource RegularProductBrush}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+                
+                <!-- Smart TV LG -->
+                <Border Style="{StaticResource ProductCardStyle}" Background="{StaticResource TVProductBrush}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Smart TV LG" Style="{StaticResource ProductNameStyle}"/>
+                            <TextBlock Text="Год выпуска: 2022" Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Лет с момента выпуска: 2" Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Цена до повышения: 1500.00 руб." Style="{StaticResource ProductInfoStyle}"/>
+                            <TextBlock Text="Цена после повышения: 1800.00 руб." Style="{StaticResource PriceStyle}"/>
+                            
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Подробнее" Style="{StaticResource ButtonStyle}"/>
+                                <Button Content="В корзину" Style="{StaticResource ButtonStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <Border Grid.Column="1" Width="150" Height="100" 
+                                Background="White" CornerRadius="5" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="Smart TV" FontSize="28" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Foreground="{StaticResource TVProductBrush}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window> 
