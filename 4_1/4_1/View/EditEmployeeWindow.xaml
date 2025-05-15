@@ -22,17 +22,20 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Имя:" Margin="5"/>
-        <TextBox x:Name="txtFirstName" Grid.Row="0" Grid.Column="1" Margin="5"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding FirstName}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Фамилия:" Margin="5"/>
-        <TextBox x:Name="txtLastName" Grid.Row="1" Grid.Column="1" Margin="5"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding LastName}"/>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Должность:" Margin="5"/>
-        <ComboBox x:Name="cmbRole" Grid.Row="2" Grid.Column="1" Margin="5" 
-                  DisplayMemberPath="NameRole" SelectedValuePath="Id"/>
+        <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" 
+                  ItemsSource="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
+                  DisplayMemberPath="NameRole"
+                  SelectedValuePath="NameRole"
+                  SelectedValue="{Binding Role}"/>
 
         <Label Grid.Row="3" Grid.Column="0" Content="Дата рождения:" Margin="5"/>
-        <DatePicker x:Name="dpBirthday" Grid.Row="3" Grid.Column="1" Margin="5"/>
+        <DatePicker Grid.Row="3" Grid.Column="1" Margin="5" SelectedDate="{Binding Birthday}"/>
 
         <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" 
                     Orientation="Horizontal" HorizontalAlignment="Right">

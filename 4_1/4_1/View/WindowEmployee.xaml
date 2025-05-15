@@ -4,15 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_4_1.View"
+        xmlns:viewmodel="clr-namespace:_4_1.ViewModel"
         mc:Ignorable="d"
         Title="Сотрудники" Height="450" Width="800">
-    <Grid>
+    
+    <Window.Resources>
+        <viewmodel:PersonViewModel x:Key="PersonViewModel"/>
+    </Window.Resources>
+    
+    <Grid DataContext="{StaticResource PersonViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
-        <ListView x:Name="lvEmployee" Grid.Row="0">
+        <ListView x:Name="lvEmployee" Grid.Row="0"
+                  ItemsSource="{Binding ListPerson}"
+                  SelectedItem="{Binding SelectedPersonDPO}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Код" Width="50" 
@@ -30,9 +38,12 @@
         </ListView>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Добавить" Width="100" Margin="10" Click="AddEmployee_Click"/>
-            <Button Content="Редактировать" Width="100" Margin="10" Click="EditEmployee_Click"/>
-            <Button Content="Удалить" Width="100" Margin="10" Click="DeleteEmployee_Click"/>
+            <Button Content="Добавить" Width="100" Margin="10"
+                    Command="{Binding AddPerson}"/>
+            <Button Content="Редактировать" Width="100" Margin="10"
+                    Command="{Binding EditPerson}"/>
+            <Button Content="Удалить" Width="100" Margin="10"
+                    Command="{Binding DeletePerson}"/>
         </StackPanel>
     </Grid>
 </Window> 

@@ -2,18 +2,160 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using _4_1.Helper;
 using _4_1.Model;
+using _4_1.View;
 
 namespace _4_1.ViewModel
 {
     public class PersonViewModel : ViewModelBase
     {
         private ObservableCollection<PersonDPO> _listPerson = new ObservableCollection<PersonDPO>();
+        private PersonDPO _selectedPersonDPO;
+        
+        // Команды
+        private RelayCommand _addPerson;
+        private RelayCommand _editPerson;
+        private RelayCommand _deletePerson;
+        
+        public RelayCommand AddPerson
+        {
+            get
+            {
+                return _addPerson ?? (_addPerson = new RelayCommand(obj =>
+                {
+                    // Формирование кода нового сотрудника
+                    int personId = GetNextPersonId();
+                    PersonDPO per = new PersonDPO(
+                        personId,
+                        "", // Роль будет выбрана в окне редактирования
+                        "",
+                        "",
+                        DateTime.Now
+                    );
+                    
+                    EditEmployeeWindow wnPerson = new EditEmployeeWindow(per, _vmRole);
+                    if (wnPerson.ShowDialog() == true)
+                    {
+                        // Находим ID роли по имени роли
+                        int roleId = 1; // По умолчанию
+                        foreach (var role in _vmRole)
+                        {
+                            if (role.NameRole == per.Role)
+                            {
+                                roleId = role.Id;
+                                break;
+                            }
+                        }
+                        
+                        // Создаем новый объект Person для внутреннего списка
+                        Person p = new Person(
+                            per.Id,
+                            roleId,
+                            per.FirstName,
+                            per.LastName,
+                            per.Birthday
+                        );
+                        
+                        _vmPerson.Add(p);
+                        FillPersonDPO();
+                    }
+                }));
+            }
+        }
+        
+        public RelayCommand EditPerson
+        {
+            get
+            {
+                return _editPerson ?? (_editPerson = new RelayCommand(obj =>
+                {
+                    PersonDPO per = SelectedPersonDPO;
+                    // Создаем копию для редактирования
+                    PersonDPO tempPerson = new PersonDPO(
+                        per.Id,
+                        per.Role,
+                        per.FirstName,
+                        per.LastName,
+                        per.Birthday
+                    );
+                    
+                    EditEmployeeWindow wnPerson = new EditEmployeeWindow(tempPerson, _vmRole);
+                    if (wnPerson.ShowDialog() == true)
+                    {
+                        // Применяем изменения к оригинальному объекту
+                        per.Role = tempPerson.Role;
+                        per.FirstName = tempPerson.FirstName;
+                        per.LastName = tempPerson.LastName;
+                        per.Birthday = tempPerson.Birthday;
+                        
+                        // Находим ID роли по имени роли
+                        int roleId = 1; // По умолчанию
+                        foreach (var role in _vmRole)
+                        {
+                            if (role.NameRole == per.Role)
+                            {
+                                roleId = role.Id;
+                                break;
+                            }
+                        }
+                        
+                        // Находим исходный объект Person для обновления
+                        Person p = _vmPerson.FirstOrDefault(x => x.Id == per.Id);
+                        if (p != null)
+                        {
+                            p.RoleId = roleId;
+                            p.FirstName = per.FirstName;
+                            p.LastName = per.LastName;
+                            p.Birthday = per.Birthday;
+                        }
+                        
+                        FillPersonDPO();
+                    }
+                }, (obj) => SelectedPersonDPO != null));
+            }
+        }
+        
+        public RelayCommand DeletePerson
+        {
+            get
+            {
+                return _deletePerson ?? (_deletePerson = new RelayCommand(obj =>
+                {
+                    PersonDPO person = SelectedPersonDPO;
+                    MessageBoxResult result = MessageBox.Show("Удалить данные по сотруднику: \n" + person.LastName + " " +
+                        person.FirstName, "Предупреждение", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                    
+                    if (result == MessageBoxResult.OK)
+                    {
+                        // Удаление данных из списка отображения
+                        _listPerson.Remove(person);
+                        // Удаление данных из списка объектов
+                        Person p = _vmPerson.FirstOrDefault(x => x.Id == person.Id);
+                        if (p != null)
+                        {
+                            _vmPerson.Remove(p);
+                        }
+                    }
+                }, (obj) => SelectedPersonDPO != null));
+            }
+        }
         
         public ObservableCollection<PersonDPO> ListPerson
         {
             get { return _listPerson; }
             set { SetProperty(ref _listPerson, value); }
+        }
+
+        public PersonDPO SelectedPersonDPO
+        {
+            get { return _selectedPersonDPO; }
+            set
+            {
+                SetProperty(ref _selectedPersonDPO, value);
+                OnPropertyChanged("SelectedPersonDPO");
+            }
         }
 
         private ObservableCollection<Person> _vmPerson;
@@ -76,75 +218,6 @@ namespace _4_1.ViewModel
         public int GetNextPersonId()
         {
             return _vmPerson.Count > 0 ? _vmPerson.Max(p => p.Id) + 1 : 1;
-        }
-
-        public void AddPerson(PersonDPO personDPO)
-        {
-            // Find the role ID based on role name
-            int roleId = 1; // Default
-            foreach (var role in _vmRole)
-            {
-                if (role.NameRole == personDPO.Role)
-                {
-                    roleId = role.Id;
-                    break;
-                }
-            }
-
-            // Create new Person object
-            var newPerson = new Person(
-                personDPO.Id,
-                roleId,
-                personDPO.FirstName,
-                personDPO.LastName,
-                personDPO.Birthday
-            );
-
-            // Add to collection
-            _vmPerson.Add(newPerson);
-            
-            // Refresh the DPO collection
-            FillPersonDPO();
-        }
-
-        public void UpdatePerson(PersonDPO personDPO)
-        {
-            // Find the person to update
-            var person = _vmPerson.FirstOrDefault(p => p.Id == personDPO.Id);
-            if (person == null) return;
-
-            // Find the role ID based on role name
-            int roleId = 1; // Default
-            foreach (var role in _vmRole)
-            {
-                if (role.NameRole == personDPO.Role)
-                {
-                    roleId = role.Id;
-                    break;
-                }
-            }
-
-            // Update person properties
-            person.RoleId = roleId;
-            person.FirstName = personDPO.FirstName;
-            person.LastName = personDPO.LastName;
-            person.Birthday = personDPO.Birthday;
-            
-            // Refresh the DPO collection
-            FillPersonDPO();
-        }
-
-        public void DeletePerson(int id)
-        {
-            // Find the person to delete
-            var person = _vmPerson.FirstOrDefault(p => p.Id == id);
-            if (person == null) return;
-
-            // Remove from collection
-            _vmPerson.Remove(person);
-            
-            // Refresh the DPO collection
-            FillPersonDPO();
         }
     }
 } 

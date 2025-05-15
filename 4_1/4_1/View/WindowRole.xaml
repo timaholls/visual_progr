@@ -4,15 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_4_1.View"
+        xmlns:viewmodel="clr-namespace:_4_1.ViewModel"
         mc:Ignorable="d"
-        Title="Должности" Height="300" Width="500">
-    <Grid>
+        Title="Должности" Height="300" Width="500" WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <viewmodel:RoleViewModel x:Key="RoleViewModel"/>
+    </Window.Resources>
+    
+    <Grid DataContext="{StaticResource RoleViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         
-        <ListView x:Name="lvRole" Grid.Row="0">
+        <ListView x:Name="lvRole" Grid.Row="0" 
+                  ItemsSource="{Binding ListRole}"
+                  SelectedItem="{Binding SelectedRole}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Код" Width="50" 
@@ -24,9 +32,12 @@
         </ListView>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Добавить" Width="100" Margin="10" Click="AddRole_Click"/>
-            <Button Content="Редактировать" Width="100" Margin="10" Click="EditRole_Click"/>
-            <Button Content="Удалить" Width="100" Margin="10" Click="DeleteRole_Click"/>
+            <Button Content="Добавить" Width="100" Margin="10" 
+                    Command="{Binding AddRole}"/>
+            <Button Content="Редактировать" Width="100" Margin="10" 
+                    Command="{Binding EditRole}"/>
+            <Button Content="Удалить" Width="100" Margin="10" 
+                    Command="{Binding DeleteRole}"/>
         </StackPanel>
     </Grid>
 </Window> 

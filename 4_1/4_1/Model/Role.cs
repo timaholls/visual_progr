@@ -1,11 +1,33 @@
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace _4_1.Model
 {
-    public class Role
+    public class Role : INotifyPropertyChanged
     {
-        public int Id { get; set; }
-        public string NameRole { get; set; }
+        private int _id;
+        private string _nameRole;
+        
+        public int Id 
+        { 
+            get { return _id; }
+            set 
+            { 
+                _id = value;
+                OnPropertyChanged("Id");
+            }
+        }
+        
+        public string NameRole 
+        { 
+            get { return _nameRole; }
+            set 
+            { 
+                _nameRole = value;
+                OnPropertyChanged("NameRole");
+            }
+        }
 
         public Role(int id, string nameRole)
         {
@@ -16,6 +38,12 @@ namespace _4_1.Model
         public bool RolePredicate(Role role)
         {
             return role.Id == Id;
+        }
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 } 

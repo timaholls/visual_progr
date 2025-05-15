@@ -19,7 +19,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Наименование:" Margin="5"/>
-        <TextBox x:Name="txtRoleName" Grid.Row="0" Grid.Column="1" Margin="5"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding NameRole}"/>
 
         <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
                     Orientation="Horizontal" HorizontalAlignment="Right">
